@@ -1,8 +1,11 @@
 import './App.css';
 import { MdControlPoint, MdSearch, MdCropDin, MdKeyboardArrowRight, MdKeyboardArrowLeft, MdNoEncryption } from "react-icons/md";
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
+import { DateTimePicker } from "@material-ui/pickers";
 import ReactDOM from 'react-dom';
 import Calendar from 'react-calendar-material';
+import { MuiPickersUtilsProvider, InlineDatePicker } from "material-ui-pickers";
+import DateFnsUtils from "@date-io/date-fns";
 
 function App() {
   const [todos, setTodos] = useState([
@@ -41,7 +44,7 @@ function App() {
       date:'Thursday, October 1st',
       items:[
         {
-          label: 'JAPAN 101: Quiz section'
+          label: 'CSE 414: Quiz section'
         }
       ]
     }
@@ -81,36 +84,34 @@ function App() {
   }
 
   function colorPicker(subject){
-    if (subject === 'HCDE 438') {
+    if (subject === 'JAPAN 101') {
       return 'red'
-    } else if (subject === 'EcoCar') {
+    } else if (subject === 'UW') {
       return 'green'
     } else {
       return 'blue'
     }  
   }
 
+  function BasicDateTimePicker() {
+    const [selectedDate, handleDateChange] = useState(new Date());
+
+    return (
+      <Fragment>
+        <DateTimePicker
+          label="DateTimePicker"
+          inputVariant="outlined"
+          value={selectedDate}
+          onChange={handleDateChange}
+        />
+      </Fragment>
+    )
+  }
+
   return (
   <header>  
     <div className='leftsection'>
       <div className='sectioncontent1'>
-        {/*<div className='title1'>
-          <MdKeyboardArrowLeft className='titlechevron'/>
-          February
-          <MdKeyboardArrowRight className='titlechevron'/>
-        </div>
-        <div className='optiontab'>
-          <div className='today'>
-            Today
-          </div>
-          <div className='thisweek'>
-            This Week
-          </div>
-          <div className='thismonth'>
-            This Month
-          </div>
-        </div>
-  */}
         <div className='calendarwrap'>
           <Calendar 
             showHeader={false}
@@ -140,7 +141,6 @@ function App() {
           Upcoming
         </div>
         <div className='cardwrap'>
-
           {notes.map(notesForDate=>{
           return <div>
             <div className='card'>
@@ -160,8 +160,14 @@ function App() {
         </div>
       </div>}
       {adding && <div>
-        adding!  
-      </div>}
+        <div className='subtitle1'>
+          Add a new to do item:
+        </div> 
+        <MuiPickersUtilsProvider utils={DateFnsUtils}> 
+        <InlineDatePicker onChange={console.log} value={new Date()} />
+        </MuiPickersUtilsProvider>
+      </div>
+      }
     </div>
     <div className='rightsection'>
       <div className='title3'>
@@ -188,4 +194,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
