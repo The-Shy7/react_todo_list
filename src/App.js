@@ -1,6 +1,6 @@
 import './App.css';
 import { MdControlPoint, MdSearch, MdCropDin, MdKeyboardArrowRight, MdKeyboardArrowLeft, MdNoEncryption } from "react-icons/md";
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { DateTimePicker } from "@material-ui/pickers";
 import ReactDOM from 'react-dom';
 import Calendar from 'react-calendar-material';
@@ -10,9 +10,9 @@ import TextField from '@material-ui/core/TextField';
 import * as moment from 'moment'
 
 function App() {
-  const [todos, setTodos] = useState([
+  const [notes, setNotes] = useState([
     {
-      date: 'Thursday, October 1st',
+      date: '10/01/2020',
       items:[
         {
           label:'Weeb Nation UW meeting',
@@ -22,7 +22,7 @@ function App() {
         }
       ]
     },{
-      date:'Friday, October 2nd',
+      date:'10/02/2020',
       items:[
         {
           label: 'Groceries'
@@ -30,9 +30,9 @@ function App() {
       ]
     }
   ])
-  const [notes, setNotes] = useState([
+  const [todos, setTodos] = useState([
     {
-      date: 'Wednesday, September 30th',
+      date: '09/30/2020',
       items:[
         {
           subject:'JAPAN 101: ',
@@ -43,7 +43,7 @@ function App() {
         }
       ]
     },{
-      date:'Thursday, October 1st',
+      date:'10/01/2020',
       items:[
         {
           label: 'CSE 414: Quiz section'
@@ -51,6 +51,15 @@ function App() {
       ]
     }
   ])
+
+  useEffect(()=>{
+    const t = localStorage.getItem('todos')
+
+    if (t) {
+      setTodos(JSON.parse(t))
+    }
+  },[])
+
   const [addingToDo, setAddingToDo] = useState(false)
   const [addingNote, setAddingNote] = useState(false)
   const [date, setDate] = useState(null)
@@ -70,6 +79,7 @@ function App() {
       })
     }
 
+    localStorage.setItem('notes', JSON.stringify(newNote))
     setNotes(newNote)
   }
 
@@ -86,6 +96,7 @@ function App() {
       })
     }
 
+    localStorage.setItem('todos', JSON.stringify(newTodos))
     setTodos(newTodos)
   }
 
@@ -98,22 +109,6 @@ function App() {
       return 'blue'
     }  
   }
-
-  // function BasicDateTimePicker() {
-  //   const [selectedDate, handleDateChange] = useState(new Date());
-
-  //   return (
-  //     <Fragment>
-  //       <DateTimePicker
-  //         label="DateTimePicker"
-  //         inputVariant="outlined"
-  //         value={selectedDate}
-  //         onChange={handleDateChange}
-  //       />
-  //     </Fragment>
-  //   )
-  // }
-
   return (
   <header>  
     <div className='leftsection'>
@@ -129,7 +124,7 @@ function App() {
     <div className='middlesection'>
       <div className='title2'>
           To-Do List
-          <button className='searchbutton' onClick={() => { 
+          <button className='searchbutton' onClick={() => {     
           }}
             style={{border: 'none', 'margin-left':5, height:25, width:25}}>
             <MdSearch style={{color: 'gray', 'margin-left':10, height:25, width:25}} />
@@ -141,23 +136,22 @@ function App() {
             <MdControlPoint style={{height:25, width:25}} />
           </button>
       </div>
-     {!addingToDo && <div>
+      {!addingToDo && <div>
         <div className='subtitle1'>
           Upcoming
         </div>
         <div className='cardwrap'>
-          {notes.map(notesForDate=>{
+          {todos.map(todosForDate=>{
           return <div>
             <div className='card'>
-              {notesForDate.date}
+              {todosForDate.date}
             </div>
-            {notesForDate.items.map(notes=>{
+            {todosForDate.items.map(todos=>{
               return <div className='subject'>
                 <MdCropDin className='checkbox' style={{'margin-left':5, height:20, width:20}} />
-                <colorPicker subject={notes.subject} />
+                <colorPicker subject={todos.subject} />
                 <div className='subjectcolor'> </div>
-                {notes.subject}
-                {notes.label}
+                {todos.label}
               </div>
             })}
           </div>
@@ -169,13 +163,13 @@ function App() {
           Add a new to do item:
         </div> 
         <div className='datepicker'>
-        Date: 
+        Due Date: 
         <MuiPickersUtilsProvider utils={DateFnsUtils}> 
         <InlineDatePicker style={{'margin-left':15}} 
           inputVariant="outlined" 
           onChange={handleDateChange} 
           value={selectedDate} 
-        />
+          />
         </MuiPickersUtilsProvider>
         </div>
         <div>
@@ -185,15 +179,18 @@ function App() {
             multiline
             rowsMax="4"
             variant='outlined'
-            onChange={e=> setItem(e.target.value)}
-            value={item}
+            onChange={e=> setText(e.target.value)}
+            value={text}
         />
         <button variant="contained" color="primary" className='savebutton' onClick={()=>{
           const formattedDate = moment(selectedDate).format('MM/DD/YYYY')
-          addTodo(formattedDate, item)        
+          addTodo(formattedDate, text)     
+          setText('')   
+          setAddingToDo(false)
           }}>
           Save
         </button>
+
         </div>
       </div>
       }
@@ -209,14 +206,14 @@ function App() {
           </button>
       </div>
       {!addingNote && <div>
-      {todos.map(todosForDate=>{
+      {notes.map(notesForDate=>{
         return <div>
           <div className='date'>
-            {todosForDate.date}
+            {notesForDate.date}
           </div>
-          {todosForDate.items.map(todo=>{
+          {notesForDate.items.map(notes=>{
             return <div className='note1'>
-              {todo.label}
+              {notes.label}
               <div className='chevwrap'>
                 <MdKeyboardArrowRight className='chevron'/>
               </div>
@@ -228,11 +225,23 @@ function App() {
       }
       {addingNote && <div>
         <div className='date'>
+          <div className='datepicker2'>
+          Date: 
+          <MuiPickersUtilsProvider utils={DateFnsUtils}> 
+          <InlineDatePicker style={{'margin-left':15}} 
+            inputVariant="outlined" 
+            onChange={handleDateChange} 
+            value={selectedDate} 
+            />
+          </MuiPickersUtilsProvider>
+          </div>
           <TextField className='notetitle'
             id="standard-multiline-flexible"
             label="Title"
             multiline
             rowsMax="4"
+            onChange={e=> setText(e.target.value)}
+            value={text}
           />
           <TextField className='notetext'
             id="outlined-multiline-static"
@@ -241,7 +250,12 @@ function App() {
             rows="4"
             variant="outlined"
           />
-          <button variant="contained" color="primary" className='savebutton'>
+          <button variant="contained" color="primary" className='savebutton' onClick={()=>{
+            const formattedDate = moment(selectedDate).format('MM/DD/YYYY')
+            addNote(formattedDate, text)     
+            setText('')   
+            setAddingNote(false)
+            }}>
             Save
           </button>
         </div>
@@ -252,4 +266,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;
