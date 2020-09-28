@@ -46,6 +46,7 @@ header {
   color: #2C25B8;
   width:33rem;
   height: 100rem;
+  align-items: center;
 }
 
 .sectioncontent {
@@ -57,7 +58,6 @@ header {
   display:flex;
   justify-content: center;
   padding-top: 40px;
-  align-items: center;
 }
 
 .title1 {
@@ -145,10 +145,20 @@ header {
 
 .note1 {
   display: flex;
-  align-items: left;
   font-size: 1rem;
   flex-direction: column;
   margin-left: 50px;
+  position: relative;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  background: #2C25B8; 
+  color: white;
+  max-width: 25vw;
+  border-radius: 15px;
+  padding-left: 10px;
+  word-wrap: break-word;
+  align-items: center;
 }
 
 .cardwrap {
@@ -169,26 +179,11 @@ header {
 
 .date {
   display: flex;
-  align-items: left;
-  margin-left: 50px;
+  align-items: center;
   margin-top: 50px;
   font-size: 1rem;
   color: gray;
   flex-direction: column;
-}
-
-.note1 {
-  position: relative;
-  margin-top: 20px;
-  display: flex;
-  flex-direction: row;
-  background: #2C25B8; 
-  color: white;
-  width: 300px;
-  border-radius: 15px;
-  padding-left: 10px;
-  height: 25px;
-  align-items: center;
 }
 
 .chevwrap {
@@ -281,6 +276,7 @@ p {
 .addbutton {
   color: #2C25B8;
   background: transparent;
+  margin-right: 25px !important;
 }
 
 .MuiFormControl-root {

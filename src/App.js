@@ -1,8 +1,6 @@
 import './App.css';
 import { MdControlPoint, MdSearch, MdCropDin, MdKeyboardArrowRight, MdKeyboardArrowLeft, MdNoEncryption } from "react-icons/md";
 import React, { Fragment, useState, useEffect } from 'react';
-import { DateTimePicker } from "@material-ui/pickers";
-import ReactDOM from 'react-dom';
 import Calendar from 'react-calendar-material';
 import { MuiPickersUtilsProvider, InlineDatePicker, DatePicker } from "material-ui-pickers";
 import DateFnsUtils from "@date-io/date-fns";
@@ -66,6 +64,7 @@ function App() {
   const [date, setDate] = useState(null)
   const [text, setText] = useState('')
   const [selectedDate, handleDateChange] = useState(new Date());
+  const [view, setView] = useState(false)
 
   function addNote(date,text){
     const newNote = [...notes]
@@ -101,15 +100,22 @@ function App() {
     setTodos(newTodos)
   }
 
-  function colorPicker(subject){
-    if (subject === 'JAPAN 101') {
-      return 'red'
-    } else if (subject === 'UW') {
-      return 'green'
-    } else {
-      return 'blue'
-    }  
+  function removeTodo(date,text){
+    const newTodos = [...todos]
+    const todosForDate = newTodos.find(t=>t.date===date)
+    todosForDate.items = todosForDate.items.filter(t=> t.label!==text)
+    localStorage.setItem('todos', JSON.stringify(newTodos))
+    setTodos(newTodos)
   }
+
+  function removeNotes(date,text){
+    const newNotes = [...notes]
+    const notesForDate = newNotes.find(t=>t.date===date)
+    notesForDate.items = notesForDate.items.filter(t=> t.label!==text)
+    localStorage.setItem('notes', JSON.stringify(newNotes))
+    setNotes(newNotes)
+  }
+
   return (
   <header>  
     <div className='leftsection'>
@@ -132,12 +138,14 @@ function App() {
             <MdControlPoint style={{height:25, width:25}} />
           </button>
       </div>
-      {!addingToDo && <div>
+     {!addingToDo && <div>
         <div className='subtitle1'>
           Upcoming
         </div>
         <div className='cardwrap'>
           {todos.map(todosForDate=>{
+          if(todosForDate.items.length===0) return <></>
+          else
           return <div>
             <div className='card'>
               {todosForDate.date}
@@ -146,7 +154,7 @@ function App() {
               return <div className='subject'>
                 <button 
                 style={{'margin-left':5, height:20, width:20, border: 'none'}}>
-                <MdCropDin className='checkbox' 
+                <MdCropDin className='checkbox' onClick={()=>removeTodo(todosForDate.date,todos.label)}
                 style={{height:20, width: 20, border: 'none'}}></MdCropDin>
                 </button>
                 <colorPicker subject={todos.subject} />
@@ -190,13 +198,12 @@ function App() {
           }}>
           Save
         </button>
-
         </div>
       </div>
       }
     </div>
     <div className='rightsection'>
-      <div className='title3'>
+      <div className='title2'>
           Notes
           <button className='addbutton' onClick={() => {
             setAddingNote(!addingNote)
@@ -207,16 +214,16 @@ function App() {
       </div>
       {!addingNote && <div>
       {notes.map(notesForDate=>{
+        if(notesForDate.items.length===0) return <></>
+        else
         return <div>
           <div className='date'>
             {notesForDate.date}
           </div>
           {notesForDate.items.map(notes=>{
-            return <div className='note1'>
+            return <div className='note1' onClick={()=>removeNotes(notesForDate.date,notes.label)}>
               {notes.label}
-              <div className='chevwrap'>
-                <MdKeyboardArrowRight className='chevron'/>
-              </div>
+              
             </div>
           })}
         </div>
@@ -235,19 +242,13 @@ function App() {
             />
           </MuiPickersUtilsProvider>
           </div>
-          <TextField className='notetitle'
-            id="standard-multiline-flexible"
-            label="Title"
-            multiline
-            rowsMax="4"
-            onChange={e=> setText(e.target.value)}
-            value={text}
-          />
           <TextField className='notetext'
             id="outlined-multiline-static"
             label="Note"
             multiline
             rows="4"
+            onChange={e=> setText(e.target.value)}
+            value={text}
             variant="outlined"
           />
           <button variant="contained" color="primary" className='savebutton' onClick={()=>{
@@ -258,7 +259,7 @@ function App() {
             }}>
             Save
           </button>
-        </div>
+        </div>   
       </div>
       }   
     </div>
@@ -266,4 +267,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
