@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import Calendar from 'react-calendar-material';
 import { MuiPickersUtilsProvider, InlineDatePicker } from "material-ui-pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import TextField from '@material-ui/core/TextField';
 
 function App() {
   const [todos, setTodos] = useState([
@@ -49,7 +50,8 @@ function App() {
       ]
     }
   ])
-  const [adding, setAdding] = useState(false)
+  const [addingToDo, setAddingToDo] = useState(false)
+  const [addingNote, setAddingNote] = useState(false)
 
   function addNote(date,text){
     const newNote = [...notes]
@@ -123,20 +125,19 @@ function App() {
     <div className='middlesection'>
       <div className='title2'>
           To-Do List
-          <button className='searchbutton' onClick={() => {
-            
+          <button className='searchbutton' onClick={() => { 
           }}
             style={{border: 'none', 'margin-left':5, height:25, width:25}}>
             <MdSearch style={{color: 'gray', 'margin-left':10, height:25, width:25}} />
           </button>
           <button className='addbutton' onClick={() => {
-            setAdding(!adding)
+            setAddingToDo(!addingToDo)
           }}
             style={{border: 'none', 'margin-left':15, height:25, width:25}}>
             <MdControlPoint style={{height:25, width:25}} />
           </button>
       </div>
-     {!adding && <div>
+     {!addingToDo && <div>
         <div className='subtitle1'>
           Upcoming
         </div>
@@ -159,14 +160,27 @@ function App() {
           })}
         </div>
       </div>}
-      {adding && <div>
+      {addingToDo && <div>
         <div className='subtitle1'>
           Add a new to do item:
         </div> 
-        <div className='card'>
+        <div className='datepicker'>
+        Date: 
         <MuiPickersUtilsProvider utils={DateFnsUtils}> 
-        <InlineDatePicker inputVariant="outlined" onChange={console.log} value={new Date()} />
+        <InlineDatePicker style={{'margin-left':15}} inputVariant="outlined" onChange={console.log} value={new Date()} />
         </MuiPickersUtilsProvider>
+        </div>
+        <div>
+        <TextField className='todoitem'
+            id="standard-multiline-flexible"
+            label="To Do Item"
+            multiline
+            rowsMax="4"
+            variant='outlined'
+        />
+        <button variant="contained" color="primary" className='savebutton'>
+            Save
+        </button>
         </div>
       </div>
       }
@@ -175,13 +189,13 @@ function App() {
       <div className='title3'>
           Notes
           <button className='addbutton' onClick={() => {
-            setAdding(!adding)
+            setAddingNote(!addingNote)
           }}
             style={{border: 'none', 'margin-left':150, height:25, width:25}}>
             <MdControlPoint style={{height:25, width:25}} />
           </button>
       </div>
-      {!adding && <div>
+      {!addingNote && <div>
       {todos.map(todosForDate=>{
         return <div>
           <div className='date'>
@@ -199,8 +213,25 @@ function App() {
       })}
       </div>
       }
-      {adding && <div>
-        something
+      {addingNote && <div>
+        <div className='date'>
+          <TextField className='notetitle'
+            id="standard-multiline-flexible"
+            label="Title"
+            multiline
+            rowsMax="4"
+          />
+          <TextField className='notetext'
+            id="outlined-multiline-static"
+            label="Note"
+            multiline
+            rows="4"
+            variant="outlined"
+          />
+          <button variant="contained" color="primary" className='savebutton'>
+            Save
+          </button>
+        </div>
       </div>
       }   
     </div>
