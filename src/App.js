@@ -1,8 +1,8 @@
 import './App.css';
-import { MdControlPoint, MdSearch, MdCropDin, MdKeyboardArrowRight, MdKeyboardArrowLeft, MdNoEncryption } from "react-icons/md";
-import React, { Fragment, useState, useEffect } from 'react';
+import { MdControlPoint, MdCropDin } from "react-icons/md";
+import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar-material';
-import { MuiPickersUtilsProvider, InlineDatePicker, DatePicker } from "material-ui-pickers";
+import { MuiPickersUtilsProvider, InlineDatePicker } from "material-ui-pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import TextField from '@material-ui/core/TextField';
 import * as moment from 'moment'
@@ -52,7 +52,6 @@ function App() {
 
   useEffect(()=>{
     const t = localStorage.getItem('todos')
-
     if (t) {
       setTodos(JSON.parse(t))
     }
@@ -60,13 +59,10 @@ function App() {
 
   const [addingToDo, setAddingToDo] = useState(false)
   const [addingNote, setAddingNote] = useState(false)
-  const [clicked, setClicked] = useState(false)
-  const [date, setDate] = useState(null)
   const [text, setText] = useState('')
   const [selectedDate, handleDateChange] = useState(new Date());
-  const [view, setView] = useState(false)
 
-  function addNote(date,text){
+  function addNote(date,text) {
     const newNote = [...notes]
     const notesForDate = newNote.find(t=>t.date===date)
 
@@ -83,7 +79,7 @@ function App() {
     setNotes(newNote)
   }
 
-  function addTodo(date,text){
+  function addTodo(date,text) {
     const newTodos = [...todos]
     const todosForDate = newTodos.find(t=>t.date===date)
 
@@ -100,7 +96,7 @@ function App() {
     setTodos(newTodos)
   }
 
-  function removeTodo(date,text){
+  function removeTodo(date,text) {
     const newTodos = [...todos]
     const todosForDate = newTodos.find(t=>t.date===date)
     todosForDate.items = todosForDate.items.filter(t=> t.label!==text)
@@ -108,7 +104,7 @@ function App() {
     setTodos(newTodos)
   }
 
-  function removeNotes(date,text){
+  function removeNotes(date,text) {
     const newNotes = [...notes]
     const notesForDate = newNotes.find(t=>t.date===date)
     notesForDate.items = notesForDate.items.filter(t=> t.label!==text)
@@ -251,7 +247,7 @@ function App() {
             value={text}
             variant="outlined"
           />
-          <button variant="contained" color="primary" className='savebutton' onClick={()=>{
+          <button variant="contained" color="primary" className='savebutton2' onClick={()=>{
             const formattedDate = moment(selectedDate).format('MM/DD/YYYY')
             addNote(formattedDate, text)     
             setText('')   
@@ -259,7 +255,7 @@ function App() {
             }}>
             Save
           </button>
-        </div>   
+        </div>
       </div>
       }   
     </div>
@@ -267,4 +263,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;
